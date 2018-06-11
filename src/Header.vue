@@ -54,8 +54,8 @@
                 this.active=idx
             }
         },
-        mounted(){
+        /*mounted(){
             document.querySelector('.container').firstChild.classList.add('active')
-        },
+        },*/
     }
 </script>
