@@ -1,12 +1,12 @@
 <template>
     <div class="todo">
         <ul>
-            <li style="padding: 30px 20px;">
-                <div style="display:flex;margin-bottom:10px">
-                    <input type="checkbox">
-                    <label class="title"  v-if="!show">{{todo.title}}</label>
-                    <input v-else type="text" :value="todo.title" class="title">
-                    <i class="far fa-star"></i>
+            <li style="padding: 30px 20px;" :class="completedClass">
+                <div style="display:flex;margin-bottom:10px;align-items: center;" >
+                    <input type="checkbox" :id="idx+'check'" @click="check(idx);">
+                    <label class="title"  :class="[completedClass,lineDecoration]" v-if="!show">{{todo.title}}</label>
+                    <input v-else type="text" :id="idx+'input'" :class="[completedClass,lineDecoration]" :value="todo.title" class="title">
+                    <i class="far fa-star" @click="fav($event)"></i>
                     <i class="far fa-edit" @click="show = !show"></i>
                     <i class="fas fa-times" @click="remove(idx)"></i>
                 </div>
@@ -21,8 +21,8 @@
                                     <span>DeadLine</span>
                                 </div>
                                 <div style="text-align:center">
-                                    <input type="date" :value="todo.date">
-                                    <input type="time" :value="todo.time">
+                                    <input type="date" :id="idx+'date'" :value="todo.date">
+                                    <input type="time" :id="idx+'time'" :value="todo.time">
                                 </div>
                             </li>
                             <li>
@@ -31,7 +31,7 @@
                                     <span>Comment</span>
                                 </div>
                                 <div style="text-align:center">
-                                    <textarea placeholder="add some comment..." :value="todo.textContent"></textarea>
+                                    <textarea :id="idx+'text'" placeholder="add some comment..." :value="todo.textContent"></textarea>
                                 </div>
                             </li>
                         </ul>
@@ -40,13 +40,12 @@
                         <div class="cancel" @click="show=!show">
                             X Cancle
                         </div>
-                        <div class="addtodo" @click="a(todo)">
+                        <div class="addtodo" @click="updateTodo(idx,todo)">
                             + Save
                         </div>
                     </div>
                 </div>
             </li>
-            
         </ul>
     </div>
 </template>
@@ -158,10 +157,22 @@
         border: none;
         outline: none;
     }
+
+    .showClass {
+        display: none;
+    }
+
+    .completed {
+        background-color: #FFF2DC ;
+    }
+
+    .line {
+        text-decoration: line-through;
+    }
 </style>
 
 <script>
-    import {mapMutations} from 'vuex'
+    import {mapMutations,mapState} from 'vuex'
     export default {
         props:['todo','idx'],
         data(){
@@ -170,10 +181,31 @@
             }
         },
         methods:{
-            a(x){
-                console.log(x)
+            ...mapMutations(['remove','update','check']),
+            updateTodo(idx,todo){
+                let textVal = document.getElementById(idx+"text").value;
+                let dateVal = document.getElementById(idx+"date").value;
+                let timeVal = document.getElementById(idx+"time").value;
+                let inputVal = document.getElementById(idx+"input").value;
+                this.update({idx,textVal,dateVal,timeVal,inputVal})
+                this.show = !this.show;
             },
-            ...mapMutations(['remove'])
+            fav(evt){
+                $(evt.target).toggleClass('fas');
+            }
+        },
+        computed:{
+            ...mapState(['todos']),
+            completedClass(){
+                return {
+                    completed:this.todo.completed
+                }    
+            },
+            lineDecoration(){
+                return {
+                    line:this.todo.completed
+                }
+            }
         }
     }
 </script>

@@ -1,8 +1,16 @@
 <template>
     <div class="header">
         <div class="container">
-            <div class="link" v-for="(link,idx) in links" @click="toggle(idx)" :class="{active:idx==active}">
-                {{link}}
+            <div class="link active" @click="active($event);all()">
+                All
+            </div>
+
+            <div class="link" @click="active($event);notDone()">
+                Todo
+            </div>
+
+            <div class="link" @click="active($event);done()">
+                Completed
             </div>
         </div>
     </div>
@@ -42,20 +50,14 @@
 </style>
 
 <script>
+    import {mapMutations} from 'vuex'
     export default {
-        data(){
-            return {
-                active:0,
-                links:['All','Todo','Completed']
-            }
-        },
         methods:{
-            toggle(idx){
-                this.active=idx
+            ...mapMutations(['notDone','all','done']),
+            active(evt){
+                $(evt.target).siblings().removeClass('active')
+                $(evt.target).addClass('active')
             }
         },
-        /*mounted(){
-            document.querySelector('.container').firstChild.classList.add('active')
-        },*/
     }
 </script>

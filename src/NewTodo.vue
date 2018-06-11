@@ -35,10 +35,10 @@
                 </ul>
             </div>
             <div class="TodoFooter">
-                <div class="cancel" @click="showTodo=!showTodo">
+                <div class="cancel" @click="clear()">
                     X Cancle
                 </div>
-                <div class="addtodo" @click="setTodo({title,date,time,textContent});clear()">
+                <div class="addtodo" @click="setTodo({title,date,time,textContent,completed});clear()">
                     + Add Task
                 </div>
             </div>
@@ -176,6 +176,7 @@
                 date:'',
                 textContent:'',
                 title:'',
+                completed:false,
             }
         },
         methods:{
